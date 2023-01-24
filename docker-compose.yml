@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+  api1:
+    container_name: api1
+    build:
+      context: ./service-app1
+      dockerfile: Dockerfile
+    volumes:
+      - ./service-app1/:/usr/src/app/
+    ports:
+      - 5000:5000
+    stdin_open: true
+    tty: true
+
+  api2:
+    container_name: api2
+    build:
+      context: ./service-app2
+      dockerfile: Dockerfile
+    volumes:
+      - ./service-app2/:/usr/src/app/
+    ports:
+      - 5001:5001
+    stdin_open: true
+    tty: true
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 80:80
