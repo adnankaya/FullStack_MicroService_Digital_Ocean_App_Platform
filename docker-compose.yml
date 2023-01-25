@@ -9,6 +9,9 @@ services:
       - ./service-app1/:/usr/src/app/
     ports:
       - 5000:5000
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     stdin_open: true
     tty: true
 
@@ -33,3 +36,29 @@ services:
       - ./frontend:/app
     ports:
       - 80:80
+
+  redis:
+    image: redis:5.0.7
+    container_name: redis-fsms-do
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  celery:
+    build:
+      context: .
+      dockerfile: worker-celery/Dockerfile
+    container_name: celery-fsms-do
+    volumes:
+      - ./service-app1/:/usr/src/app/
+    environment:
+      - FLASK_APP=app.py
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - 6900:6900
+    depends_on:
+      - redis
+    stdin_open: true
+    tty: true
